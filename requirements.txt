@@ -1,0 +1,13 @@
+fastapi[standard]
+uvicorn[standard]
+transformers
+torch
+pydantic
+PyMuPDF
+pandas
+passlib
+PyJWT>=2.0.0
+# jwt
+bcrypt==3.2.0
+streamlit
+PyPDF2
