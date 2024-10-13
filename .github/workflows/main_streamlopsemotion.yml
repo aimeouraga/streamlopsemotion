@@ -1,0 +1,51 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - streamlopsemotion
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to registry
+      uses: docker/login-action@v2
+      with:
+        registry: https://streamlopsemotion.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername_37cdaa4c1bca439d8ba497a8926ce4b6 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_e927b059adff4f369683d1cafb22435f }}
+
+    - name: Build and push container image to registry
+      uses: docker/build-push-action@v3
+      with:
+        push: true
+        tags: streamlopsemotion.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_37cdaa4c1bca439d8ba497a8926ce4b6 }}/streamlopsemotion:${{ github.sha }}
+        file: ./Dockerfile
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'streamlopsemotion'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_15aed0b0d6514d4ead37304e8ba85752 }}
+        images: 'streamlopsemotion.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_37cdaa4c1bca439d8ba497a8926ce4b6 }}/streamlopsemotion:${{ github.sha }}'
