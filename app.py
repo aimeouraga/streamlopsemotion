@@ -4,6 +4,32 @@ import pandas as pd # type: ignore
 from PyPDF2 import PdfReader  # type: ignore # You might need to install PyPDF2 for PDF handling
 import io
 
+# Set the page layout to wide mode
+st.set_page_config(layout="wide")
+
+# Add custom CSS to set a background image
+page_bg_img = '''
+<style>
+    body {
+        background-image: url("https://media.npr.org/assets/img/2023/05/24/gettyimages-1358149692-39527b1e42cc64b90835222f8aa203956538fe0e.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+    .stApp {
+        background-color: rgba(0, 0, 0, 0.6);  /* Optional: Slightly transparent background for content */
+        padding: 20px;
+        border-radius: 10px;
+    }
+</style>
+'''
+
+# Inject the custom CSS to Streamlit
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
+
+# Define the FastAPI URL endpoint
 API_URL = "http://127.0.0.1:8000"
 TOKEN_ENDPOINT = f"{API_URL}/token"
 PREDICT_ENDPOINT = f"{API_URL}/predict/"
@@ -14,39 +40,25 @@ if "authorized" not in st.session_state:
 if "access_token" not in st.session_state:
     st.session_state["access_token"] = None
 
-# Sidebar: Login to get access token
+# Sidebar: Login and Authorization
 st.sidebar.title("Login")
 username = st.sidebar.text_input("Username")
 password = st.sidebar.text_input("Password", type="password")
 
-if st.sidebar.button("Login"):
+if st.sidebar.button("Login and Authorize"):
+    # Request an access token from FastAPI using username and password
     response = requests.post(TOKEN_ENDPOINT, data={"username": username, "password": password})
     if response.status_code == 200:
         access_token = response.json().get("access_token")
-        st.sidebar.success("Logged in successfully")
-        st.sidebar.text("Access Token:")
-        st.sidebar.code(access_token)
+        st.sidebar.success("Logged in and authorized successfully")
         st.session_state["access_token"] = access_token
-    else:
-        st.sidebar.error("Login failed")
-
-# Step 2: Authorization
-st.sidebar.title("Authorization")
-auth_username = st.sidebar.text_input("Enter Username Again")
-auth_password = st.sidebar.text_input("Enter Password Again", type="password")
-client_secret = st.sidebar.text_input("Paste Access Token", type="password")
-
-if st.sidebar.button("Authorize"):
-    access_token = st.session_state["access_token"]
-    if access_token and auth_username == username and auth_password == password and client_secret == access_token:
-        st.sidebar.success("Authorization successful")
         st.session_state["authorized"] = True
     else:
-        st.sidebar.error("Authorization failed. Please check your credentials or token.")
+        st.sidebar.error("Login failed. Please check your credentials.")
 
 # Main Page: Allow file upload only after successful authorization
 if st.session_state["authorized"]:
-    st.title("Emotion Detection")
+    st.title("Emotion Detection from Text")
 
     file_option = st.radio("Choose input type:", ("Text", "PDF", "TXT", "CSV"))
 
@@ -60,7 +72,8 @@ if st.session_state["authorized"]:
     predict_response = None
 
     if st.button("Predict"):
-        headers = {"Authorization": f"Bearer {client_secret}"}
+        # headers = {"Authorization": f"Bearer {client_secret}"}
+        headers = {"Authorization": f"Bearer {st.session_state['access_token']}"}
 
         if file_option == "Text" and input_text:
             # Prediction for text input
@@ -169,6 +182,15 @@ if st.session_state["authorized"]:
                 result_df = pd.concat([df, pd.DataFrame(predictions_list)], axis=1)
                 st.dataframe(result_df)
 
+    # Footer
+    st.markdown(
+        """
+        <hr style="border: 1px solid #0000ff;">
+        <div style="text-align: center; color: #0000ff;">
+            Made with ❤️ by AMMI Group II 
+        </div>
+        """, unsafe_allow_html=True 
+    )               
+
 else:
     st.info("Please complete login and authorization to proceed.")
-
