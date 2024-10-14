@@ -16,7 +16,7 @@ load_dotenv()
 
 ADMIN_NAME=os.getenv("ADMIN_NAME")
 PASSWORD_ADMIN=os.getenv("PASSWORD_ADMIN")
-USERNAME=os.getenv("USERNAME")
+USER_NAME=os.getenv("USER_NAME")
 PASSWORD_USER = os.getenv("PASSWORD_USER")
 
 # JWT settings
@@ -33,7 +33,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # User database
 users_db = {
     "admin": {"username": ADMIN_NAME, "password": pwd_context.hash(PASSWORD_ADMIN), "role": "admin"},
-    "user": {"username": USERNAME, "password": pwd_context.hash(PASSWORD_USER), "role": "user"},
+    "user": {"username": USER_NAME, "password": pwd_context.hash(PASSWORD_USER), "role": "user"},
 }
 
 
