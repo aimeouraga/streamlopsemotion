@@ -1,7 +1,7 @@
 import streamlit as st # type: ignore
 import requests # type: ignore
 import pandas as pd # type: ignore
-from PyPDF2 import PdfReader  # type: ignore # You might need to install PyPDF2 for PDF handling
+from PyPDF2 import PdfReader  # type: ignore #
 import io
 
 # Set the page layout to wide mode
@@ -157,12 +157,11 @@ if st.session_state["authorized"]:
                     st.dataframe(pd.DataFrame(predictions_list))
 
             elif file_option == "CSV":
-                # Read CSV file
                 df = pd.read_csv(uploaded_file)
 
                 predictions_list = []
                 for index, row in df.iterrows():
-                    row_text = ' '.join([str(item) for item in row])  # Combine row elements into a text
+                    row_text = ' '.join([str(item) for item in row]) 
                     predict_response = requests.post(
                         PREDICT_ENDPOINT,
                         headers=headers,
