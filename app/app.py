@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Union, Optional
 from fastapi import Depends, FastAPI, HTTPException, status, UploadFile, File, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from auth.auth import Token, authenticate_user, User, get_current_active_user, create_access_token
 from passlib.context import CryptContext
 import jwt
 from jwt import PyJWTError
@@ -43,37 +44,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-# User database
-users_db = {
-    "admin": {"username": ADMIN_NAME, "password": pwd_context.hash(PASSWORD_ADMIN), "role": "admin"},
-    "user": {"username": USER_NAME, "password": pwd_context.hash(PASSWORD_USER), "role": "user"},
-}
-
-# Helper functions
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def authenticate_user(username: str, password: str):
-    user = users_db.get(username)
-    if not user or not verify_password(password, user["password"]):
-        return False
-    return user
-
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
 
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -86,7 +58,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user["username"]}, expires_delta=access_token_expires
+        data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -204,6 +176,10 @@ async def predict(
     logger.info(f"Prediction: {predictions} for user: {username}")
 
     return {"predictions": predictions}
+
+@app.get("/users/me/", response_model=User)
+async def read_users_me(current_user: User = Depends(get_current_active_user)):
+    return current_user
 
 @app.get("/health")
 def health():

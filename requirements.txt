@@ -13,3 +13,5 @@ streamlit
 PyPDF2
 azure.storage.blob
 opencensus-ext-azure
+python-jose
+

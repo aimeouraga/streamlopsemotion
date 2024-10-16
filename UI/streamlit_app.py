@@ -4,30 +4,6 @@ import pandas as pd # type: ignore
 from PyPDF2 import PdfReader  # type: ignore #
 import io
 
-# Set the page layout to wide mode
-st.set_page_config(layout="wide")
-
-# Add custom CSS to set a background image
-page_bg_img = '''
-<style>
-    body {
-        background-image: url("https://media.npr.org/assets/img/2023/05/24/gettyimages-1358149692-39527b1e42cc64b90835222f8aa203956538fe0e.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }
-    .stApp {
-        background-color: rgba(0, 0, 0, 0.6);  /* Optional: Slightly transparent background for content */
-        padding: 20px;
-        border-radius: 10px;
-    }
-</style>
-'''
-
-# Inject the custom CSS to Streamlit
-st.markdown(page_bg_img, unsafe_allow_html=True)
-
 
 # Define the FastAPI URL endpoint
 API_URL = "http://127.0.0.1:8000"
