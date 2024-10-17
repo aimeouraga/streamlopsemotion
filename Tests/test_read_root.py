@@ -1,6 +1,6 @@
 import pytest
 
-from test import client 
+from tests.test import client 
 
 
 

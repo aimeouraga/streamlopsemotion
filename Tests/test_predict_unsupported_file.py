@@ -1,5 +1,5 @@
 import pytest
-from test import client, create_access_token, USER_NAME, SECRET_KEY, ALGORITHM
+from tests.test import client, create_access_token, USER_NAME, SECRET_KEY, ALGORITHM
 
 
 

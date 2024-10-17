@@ -1,6 +1,6 @@
 import pytest
 
-from test import client 
+from tests.test import client 
 
 def test_health():
     response = client.get("/health")

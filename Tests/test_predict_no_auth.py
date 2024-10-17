@@ -1,5 +1,5 @@
 import pytest
-from test import client
+from tests.test import client
 
 
 def test_predict_no_auth():

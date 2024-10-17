@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from jose import jwt
 import os
 
-client = TestClient(app, timeout=100)
+client = TestClient(app)
 
 ADMIN_NAME = os.getenv("ADMIN_NAME")
 PASSWORD_ADMIN = os.getenv("PASSWORD_ADMIN")

@@ -6,3 +6,4 @@ venv/*
 auth/__pycache__
 app/__pycache__
 .pytest_cache
+test_file.docx
