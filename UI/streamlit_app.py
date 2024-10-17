@@ -23,7 +23,7 @@ password = st.sidebar.text_input("Password", type="password")
 
 if st.sidebar.button("Login and Authorize"):
     # Request an access token from FastAPI using username and password
-    response = requests.post(TOKEN_ENDPOINT, data={"username": username, "password": password})
+    response = requests.post(TOKEN_ENDPOINT, data={"username": username, "password": password}, timeout=100)
     if response.status_code == 200:
         access_token = response.json().get("access_token")
         st.sidebar.success("Logged in and authorized successfully")

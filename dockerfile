@@ -22,4 +22,7 @@ ENV STREAMLIT_SERVER_PORT=8501
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
 
 # Command to start Streamlit first, then FastAPI
-CMD ["sh", "-c", "streamlit run UI/streamlit_app.py --server.port 8501 --server.address 0.0.0.0 & sleep 5 && uvicorn app.app:app --host 0.0.0.0 --port 8000"]
+# CMD ["sh", "-c", "streamlit run UI/streamlit_app.py --server.port 8501 --server.address 0.0.0.0 & sleep 5 && uvicorn app.app:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "streamlit run UI/streamlit_app.py --server.port 8501 --server.address 0.0.0.0 & \
+/wait-for-it.sh 127.0.0.1:8000 -- uvicorn app.app:app --host 0.0.0.0 --port 8000"]
+
