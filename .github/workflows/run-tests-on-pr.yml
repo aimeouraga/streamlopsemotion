@@ -33,6 +33,15 @@ jobs:
 
     # Run the tests using pytest
     - name: Run tests
+      env:
+        AZURE_CONNECTION_STRING: ${{ secrets.AZURE_CONNECTION_STRING }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        ALGORITHM: ${{ secrets.ALGORITHM }}
+        AZURE_APP_INSIGHTS_INSTRUMENTATION_KEY: ${{ secrets.AZURE_APP_INSIGHTS_INSTRUMENTATION_KEY }}
+        ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
+        PASSWORD_ADMIN: ${{ secrets.PASSWORD_ADMIN }}
+        USER_NAME: ${{ secrets.USER_NAME }}
+        PASSWORD_USER: ${{ secrets.PASSWORD_USER }}
       run: |
         source venv/bin/activate
         pytest --maxfail=5 --disable-warnings 
