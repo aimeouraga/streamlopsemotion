@@ -32,7 +32,7 @@ jobs:
     - name: Run tests
       run: |
         source venv/bin/activate
-        pytest ./tests
+        pytest 
 
     # Upload test results as artifacts
     - name: Upload test results
