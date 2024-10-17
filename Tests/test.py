@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from app.app import app  
+from app import app  
 from datetime import datetime, timedelta
 from jose import jwt
 import os

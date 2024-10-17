@@ -3,3 +3,6 @@
 *.zip
 venv/*
 .DS_Store
+auth/__pycache__
+app/__pycache__
+.pytest_cache
