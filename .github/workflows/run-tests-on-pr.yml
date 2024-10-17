@@ -1,0 +1,47 @@
+name: Run Tests on Pull Request
+
+# Trigger the workflow when a pull request is opened or updated
+on:
+  pull_request:
+    branches:
+      - main   
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository code
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Set up Python environment (using Python 3.11)
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt 
+
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+
+    # Run the tests using pytest
+    - name: Run tests
+      env:
+        AZURE_CONNECTION_STRING: ${{ secrets.AZURE_CONNECTION_STRING }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        ALGORITHM: ${{ secrets.ALGORITHM }}
+        AZURE_APP_INSIGHTS_INSTRUMENTATION_KEY: ${{ secrets.AZURE_APP_INSIGHTS_INSTRUMENTATION_KEY }}
+        ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
+        PASSWORD_ADMIN: ${{ secrets.PASSWORD_ADMIN }}
+        USER_NAME: ${{ secrets.USER_NAME }}
+        PASSWORD_USER: ${{ secrets.PASSWORD_USER }}
+      run: |
+        source venv/bin/activate
+        pytest --maxfail=5 --disable-warnings 
