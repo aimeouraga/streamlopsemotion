@@ -1,0 +1,43 @@
+name: Run Tests on Pull Request
+
+# Trigger the workflow when a pull request is opened or updated
+on:
+  pull_request:
+    branches:
+      - main   
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository code
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Set up Python environment (using Python 3.11)
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    # Run the tests using pytest
+    - name: Run tests
+      run: |
+        source venv/bin/activate
+        pytest tests/
+
+    # Upload test results as artifacts
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: pytest-results
+        path: ./tests
