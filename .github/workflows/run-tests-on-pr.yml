@@ -28,11 +28,14 @@ jobs:
         source venv/bin/activate
         pip install -r requirements.txt 
 
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+
     # Run the tests using pytest
     - name: Run tests
       run: |
         source venv/bin/activate
-        pytest 
+        pytest --maxfail=5 --disable-warnings 
 
     # Upload test results as artifacts
     - name: Upload test results
