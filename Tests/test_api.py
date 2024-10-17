@@ -4,16 +4,7 @@ from fastapi.testclient import TestClient
 from app import app
 from auth import create_access_token
 
-ADMIN_NAME = os.getenv("ADMIN_NAME")
-PASSWORD_ADMIN = os.getenv("PASSWORD_ADMIN")
 USER_NAME = os.getenv("USER_NAME")
-PASSWORD_USER = os.getenv("PASSWORD_USER")
-
-AZURE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
-APP_INSIGHTS_KEY = os.getenv("AZURE_APP_INSIGHTS_INSTRUMENTATION_KEY")
-
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
 
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
